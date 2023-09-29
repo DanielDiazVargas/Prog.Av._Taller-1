@@ -17,12 +17,14 @@ Fecha de contratacion
 entity Orden {
 Trabajador Asignado
 Producto
+Cantidad
 Resumen
 Cuenta
 }
 
 entity Mesa {
 {static}Numero
+Posicion
 Disponibilidad
 Registro
 }
@@ -41,7 +43,7 @@ Stock
 
 Restaurante -left-> Inventario : Gestiona >
 Restaurante "1" <-right- "0..*" Cliente : Ingresa <
-Restaurante "1" <-down- "1..*" Trabajador : Trabaja <
+Restaurante "1" -down-> "1..*" Trabajador : Administra >
 Trabajador "0.." -right-> "1" Orden : Atiende >
 Orden "1" -up-> "0, 1" Mesa : Asociada >
 Mesa "1" -up-> "0..*" Cliente : Ofrece >
