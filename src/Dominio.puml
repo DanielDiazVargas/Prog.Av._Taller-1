@@ -15,13 +15,14 @@ Fecha de contratacion
 }
 
 entity Orden {
-Trabajador
+Trabajador Asignado
 Producto
 Resumen
 Cuenta
 }
 
 entity Mesa {
+{static}Numero
 Disponibilidad
 Registro
 }
