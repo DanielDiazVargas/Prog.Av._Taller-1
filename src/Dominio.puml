@@ -46,6 +46,6 @@ Restaurante "1" <-right- "0..*" Cliente : Ingresa <
 Restaurante "1" -down-> "1..*" Trabajador : Administra >
 Trabajador "0.." -right-> "1" Orden : Atiende >
 Orden "1" -up-> "0, 1" Mesa : Asociada >
-Mesa "1" -up-> "0..*" Cliente : Ofrece >
+Mesa "1" <-up- "0..*" Cliente : Reserva <
 Cliente "1" -left-> "1" Orden : Genera >
 @enduml
