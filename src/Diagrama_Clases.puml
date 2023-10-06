@@ -1,0 +1,158 @@
+@startuml
+skin rose
+
+package "services" {
+
+    interface Sistema <<interface>> {
+
+        +agregarProductoInventario(nombre: String, precio: int, stock: int, categoria: String)
+        +eliminarProductoInventario(nombre: String)
+        +actualizarStockInventario(nombre: String, Stock: int)
+        +contratarTrabajador(nombre: String, edad: int, finalizarContrato LocalDateTime)
+        +despedirTrabajador(nombre: String)
+        +actualizarContrato(nombre: String, tipoContrato: String)
+        +registrarCliente(nombre: String, edad: int, trabajador: Trabajador): boolean
+        +desplegarMenu(): void
+        +mostrarResumenCuenta(): void
+        +pedirCuenta(): Orden
+
+    }
+
+    class SistemaImpl{
+
+        +SistemaImpl()
+    }
+
+    Sistema <|.left. SistemaImpl: Implements
+}
+
+
+package "Model" {
+
+    class Orden {
+
+        -cliente: Cliente
+        -trabajadorAsignado: Trabajador
+        -numeroMesaAsociada : int
+        -cuentaPedida: boolean
+
+        +Orden(cliente: Cliente, trabajadorAsignado: Trabajador, numeroMesaAsociada: int)
+        +pedirProducto(nombre: String): boolean
+        +resumen(): ListaProducto
+        +pedirCuenta(): boolean
+    }
+
+    Orden "0..*" o-left-> "1" Inventario: -productos: ListaProducto[]
+    Orden "1" *--> "1" Cliente
+    Orden "1" *--> "1" Trabajador
+
+    class ListaMesa {
+
+        -cantMesasMaxima: int
+        -cantMesasActual: int
+
+        +ListaMesa(cantMesasMaxima: int)
+        +agregarMesa(mesa: Mesa): boolean
+        +buscarMesaDisponible(): Mesa
+        +actualizarDisponibilidad(numeroMesa: int): boolean
+    }
+
+    class Mesa {
+
+        -numero: int
+        -posicion: int
+        -disponible: boolean
+        -cliente: Cliente
+
+        +Mesa(numero: int, posicion: int)
+        +getNumero(): int
+        +getPosicion(): int
+        +getDisponibilidad(): boolean
+        +setDisponibilidad(disponible: boolean): boolean
+        +getCliente(): Cliente
+        +setCliente(cliente: Cliente): boolean
+    }
+
+    class Cliente {
+
+        -nombre: String
+        -edad: int
+
+        +Cliente(nombre: String, edad: int)
+        +getNombre(): String
+        +setNombre(nombre: String): boolean
+        +getEdad(): int
+        +setEdad(edad: int): boolean
+    }
+
+    Mesa "1" *-up- "0..*" Cliente
+    ListaMesa "1" o--> "1..*" Mesa: -mesas: Mesa[]
+    SistemaImpl "1" --> "1" ListaMesa: -mesa: ListaMesa
+
+    class ListaTrabajador {
+
+        -cantTrabajadoresMaxima: int
+        -cantTrabajadoresActual: int
+
+        +ListaTrabajador(cantTrabajadoresMaxima: int)
+        +renovarContrato(posicion: int): boolean
+        +finalizarContrato(posicion: int): boolean
+        +otorgarContratoIndefinido(posicion: int): boolean
+        +identificarTrabajador(): int
+    }
+
+    class Trabajador {
+
+        -String: nombre
+        -int: edad
+        -String: tipoContrato
+        -fechaContratacion: LocalDateTime
+
+        +Trabajador(nombre: String, edad: int, tipoContrato: String, fechaContratacion: LocalDateTime)
+        +getNombre(): String
+        +setNombre(nombre: String): boolean
+        +getEdad(): int
+        +setEdad(edad: int): boolean
+        +getTipoContrato(): String
+        +setTipoContrato(tipoContrato: String): boolean
+        +getFechaContratacion(): LocalDateTime
+        +setFechaContratacion(fechaContratacion: LocalDateTime): boolean
+    }
+
+    ListaTrabajador "1" o--> "1..*" Trabajador: -trabajadores: Trabajador[]
+    SistemaImpl "1" --> "1" ListaTrabajador: -trabajador: ListaTrabajador
+
+    class Inventario {
+
+            -cantProductosMaxima: int
+            -cantProductosActual: int
+
+            +Inventario(cantProductoMaxima: int)
+            +agregarProducto(producto: Producto): boolean
+            +actualizarProducto(posicion: int): boolean
+            +quitarProducto(posicion: int): boolean
+            +obtenerPosicion(nombre: String): int
+        }
+
+        class Producto {
+
+            -nombre: String
+            -precio: int
+            -stock: int
+            -categoria: String
+
+            +Producto(nombre: String, precio: int, stock: int, categoria: String)
+            +getNombre(): String
+            +setNombre(nombre: int): boolean
+            +getPrecio(): int
+            +setPrecio(precio: int): boolean
+            +getStock(): int
+            +setStock(stock: int): boolean
+            +getCategoria(): String
+            +setCategoria(categoria: String): boolean
+        }
+
+        Inventario "1" o--> "0..*" Producto: -productos: Producto[]
+        SistemaImpl "1" --> "1" Inventario: -producto: Inventario
+}
+@enduml
