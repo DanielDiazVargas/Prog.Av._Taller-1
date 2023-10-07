@@ -99,7 +99,7 @@ package "Model" {
         +renovarContrato(posicion: int): boolean
         +finalizarContrato(posicion: int): boolean
         +otorgarContratoIndefinido(posicion: int): boolean
-        +identificarTrabajador(): int
+        +identificarTrabajador(nombre: String): int
     }
 
     class Trabajador {
@@ -144,7 +144,7 @@ package "Model" {
 
             +Producto(nombre: String, precio: int, stock: int, categoria: String)
             +getNombre(): String
-            +setNombre(nombre: int): boolean
+            +setNombre(nombre: String): boolean
             +getPrecio(): int
             +setPrecio(precio: int): boolean
             +getStock(): int
