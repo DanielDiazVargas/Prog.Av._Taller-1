@@ -70,7 +70,7 @@ package "Model" {
         +getNumero(): int
         +getPosicion(): int
         +getDisponibilidad(): boolean
-        +setDisponibilidad(disponible: boolean): boolean
+        +setDisponibilidad(disponible: boolean): void
         +getCliente(): Cliente
         +setCliente(cliente: Cliente): boolean
     }
@@ -82,7 +82,7 @@ package "Model" {
 
         +Cliente(nombre: String, edad: int)
         +getNombre(): String
-        +setNombre(nombre: String): boolean
+        +setNombre(nombre: String): void
         +getEdad(): int
         +setEdad(edad: int): boolean
     }
@@ -112,7 +112,7 @@ package "Model" {
 
         +Trabajador(nombre: String, edad: int, tipoContrato: String, fechaContratacion: LocalDateTime)
         +getNombre(): String
-        +setNombre(nombre: String): boolean
+        +setNombre(nombre: String): void
         +getEdad(): int
         +setEdad(edad: int): boolean
         +getTipoContrato(): String
@@ -145,13 +145,13 @@ package "Model" {
 
             +Producto(nombre: String, precio: int, stock: int, categoria: String)
             +getNombre(): String
-            +setNombre(nombre: String): boolean
+            +setNombre(nombre: String): void
             +getPrecio(): int
             +setPrecio(precio: int): boolean
             +getStock(): int
             +setStock(stock: int): boolean
             +getCategoria(): String
-            +setCategoria(categoria: String): boolean
+            +setCategoria(categoria: String): void
         }
 
         Inventario "1" o--> "0..*" Producto: -productos: Producto[]
