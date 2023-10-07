@@ -23,7 +23,7 @@ package "services" {
         +SistemaImpl()
     }
 
-    Sistema <|.left. SistemaImpl: Implements
+    Sistema <|.right. SistemaImpl: Implements
 }
 
 
