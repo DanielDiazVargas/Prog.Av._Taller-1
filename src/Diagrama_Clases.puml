@@ -45,6 +45,7 @@ package "Model" {
     Orden "0..*" o-left-> "1" Inventario: -productos: ListaProducto[]
     Orden "1" *--> "1" Cliente
     Orden "1" *--> "1" Trabajador
+    SistemaImpl "1" --> "1" Orden: -orden: Orden
 
     class ListaMesa {
 
