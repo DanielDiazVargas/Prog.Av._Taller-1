@@ -37,7 +37,7 @@ package "Model" {
         -cuentaPedida: boolean
 
         +Orden(cliente: Cliente, trabajadorAsignado: Trabajador, numeroMesaAsociada: int)
-        +pedirProducto(nombre: String): boolean
+        +pedirProducto(nombre: String, cantidad: int): boolean
         +resumen(): ListaProducto
         +pedirCuenta(): boolean
     }
@@ -55,6 +55,7 @@ package "Model" {
         +ListaMesa(cantMesasMaxima: int)
         +agregarMesa(mesa: Mesa): boolean
         +buscarMesaDisponible(): Mesa
+        +quitarMesa(numero: int): boolean
         +actualizarDisponibilidad(numeroMesa: int): boolean
     }
 
