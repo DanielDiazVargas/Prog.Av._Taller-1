@@ -11,6 +11,8 @@ public class Mesa {
 
         this.numero = numero + 1;
         this.posicion = posicion;
+        this.disponible = true;
+        this.cliente = null;
     }
 
     public int getNumero() {

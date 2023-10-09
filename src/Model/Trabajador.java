@@ -1,15 +1,15 @@
 package Model;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Trabajador {
 
     private String nombre;
     private int edad;
     private String tipoContrato;
-    private LocalDateTime fechaContratacion;
+    private LocalDate fechaContratacion;
 
-    public Trabajador (String nombre, int edad, String tipoContrato, LocalDateTime fechaContratacion) {
+    public Trabajador (String nombre, int edad, String tipoContrato, LocalDate fechaContratacion) {
 
         this.nombre = nombre;
         this.edad = edad;
@@ -53,12 +53,12 @@ public class Trabajador {
         return true;
     }
 
-    public LocalDateTime getFechaContratacion() {
+    public LocalDate getFechaContratacion() {
 
         return fechaContratacion;
     }
 
-    public boolean setFechaContratacion(LocalDateTime fechaContratacion) {
+    public boolean setFechaContratacion(LocalDate fechaContratacion) {
 
         this.fechaContratacion = fechaContratacion;
         return true;
