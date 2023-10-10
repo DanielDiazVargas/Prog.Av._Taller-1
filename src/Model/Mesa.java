@@ -45,8 +45,14 @@ public class Mesa {
         return cliente;
     }
 
-    public void setCliente(Cliente cliente) {
+    public boolean setCliente(Cliente cliente) {
+
+        if (this.cliente == null && cliente == null) {
+
+            return false;
+        }
 
         this.cliente = cliente;
+        return true;
     }
 }

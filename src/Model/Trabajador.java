@@ -35,6 +35,7 @@ public class Trabajador {
     public boolean setEdad(int edad) {
 
         if (edad < 0) {
+
             return false;
         }
 
@@ -49,6 +50,11 @@ public class Trabajador {
 
     public boolean setTipoContrato(String tipoContrato) {
 
+        if (this.tipoContrato == tipoContrato) {
+
+            return false;
+        }
+
         this.tipoContrato = tipoContrato;
         return true;
     }
@@ -59,6 +65,11 @@ public class Trabajador {
     }
 
     public boolean setFechaContratacion(LocalDate fechaContratacion) {
+
+        if (fechaContratacion.isAfter(LocalDate.now()) == true) {
+
+            return false;
+        }
 
         this.fechaContratacion = fechaContratacion;
         return true;
