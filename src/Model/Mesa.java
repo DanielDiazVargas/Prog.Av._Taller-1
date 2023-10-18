@@ -4,13 +4,11 @@ public class Mesa {
     private int numero;
     private int posicion;
     private boolean disponible;
-    private Cliente cliente;
 
     public Mesa (int numero, int posicion) {
-        this.numero = numero + 1;
+        this.numero = numero;
         this.posicion = posicion;
         this.disponible = true;
-        this.cliente = null;
     }
 
     public int getNumero() {
@@ -31,13 +29,5 @@ public class Mesa {
 
     public void setDisponible(boolean disponible) {
         this.disponible = disponible;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
     }
 }

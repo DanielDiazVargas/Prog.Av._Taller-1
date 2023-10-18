@@ -1,6 +1,7 @@
 package Service;
 
 import Model.*;
+import Model.Contenedores.ListaMesa;
 
 public interface Sistema {
 
@@ -14,6 +15,7 @@ public interface Sistema {
     String otorgarContratoIndefinido(String nombre, String fecha);
     String agregarMesa(Mesa mesa);
     String eliminarMesa(int numero);
+    ListaMesa getListaMesa();
     String atenderCliente(String nombre, int edad, Trabajador trabajador) throws Exception;
     String[][] mostrarResumen(String nombreCliente);
     public Orden pedirCuenta(String nombreCliente) throws Exception;

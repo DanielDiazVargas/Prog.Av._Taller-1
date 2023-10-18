@@ -9,13 +9,13 @@ import Model.Orden;
 
 public class SistemaImpl implements Sistema{
 
-    private Inventario producto;
+    private Inventario inventario;
     private ListaTrabajador trabajador;
     private ListaMesa mesa;
     private ListaOrden orden;
 
     public SistemaImpl() {
-        this.producto = new Inventario(999);
+        this.inventario = new Inventario(999);
         this.trabajador = new ListaTrabajador(999);
         this.mesa = new ListaMesa(999);
         this.orden = new ListaOrden(9999);
@@ -24,7 +24,7 @@ public class SistemaImpl implements Sistema{
     @Override
     public String agregarProductoInventario(Producto producto) {
         try {
-            this.producto.agregarProducto(producto);
+            this.inventario.agregarProducto(producto);
             return "Producto agregado exitosamente";
         }catch (Exception e) {
             return e.getMessage();
@@ -33,12 +33,12 @@ public class SistemaImpl implements Sistema{
 
     @Override
     public String actualizarProducto(String nombre, Producto producto) {
-        if (this.producto.obtenerPosicion(nombre) == -1) {
+        if (this.inventario.obtenerPosicion(nombre) == -1) {
             return "¡Producto no encontrado";
         }
 
         try {
-            this.producto.actualizarProducto(this.producto.obtenerPosicion(nombre), producto);
+            this.inventario.actualizarProducto(this.inventario.obtenerPosicion(nombre), producto);
             return "Producto actualizado correctamente";
         }catch (Exception e) {
             return e.getMessage();
@@ -48,7 +48,7 @@ public class SistemaImpl implements Sistema{
     @Override
     public String eliminarProducto(String nombre) {
         try {
-            this.producto.quitarProducto(this.producto.obtenerPosicion(nombre));
+            this.inventario.quitarProducto(this.inventario.obtenerPosicion(nombre));
             return "Producto eliminado";
         }catch (Exception e) {
             return e.getMessage();
@@ -58,11 +58,15 @@ public class SistemaImpl implements Sistema{
     @Override
     public String actualizarStockInventario(String nombre, int stock) {
         try {
-            this.producto.actualizarStock(this.producto.obtenerPosicion(nombre), stock);
+            this.inventario.actualizarStock(this.inventario.obtenerPosicion(nombre), stock);
             return "Stock actualizado correctamente";
         }catch (Exception e) {
             return e.getMessage();
         }
+    }
+
+    public Inventario getInventario() {
+        return this.inventario;
     }
 
     @Override
@@ -134,6 +138,11 @@ public class SistemaImpl implements Sistema{
     }
 
     @Override
+    public ListaMesa getListaMesa(){
+        return this.mesa;
+    }
+
+    @Override
     public String atenderCliente(String nombre, int edad, Trabajador trabajador) throws Exception {
         try {
             Cliente nuevoCliente = new Cliente(nombre, edad);
@@ -162,7 +171,7 @@ public class SistemaImpl implements Sistema{
     @Override
     public String[] desplegarMenu() throws Exception {
         try {
-            return producto.menuDisponible();
+            return inventario.menuDisponible();
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
