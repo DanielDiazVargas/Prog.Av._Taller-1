@@ -19,17 +19,13 @@ public class ListaMesa {
             throw new Exception("¡No hay capacidad para mas mesas!");
         }
 
-        for (int i = 0; i < this.cantMesasMaxima; i++) {
-            if (this.mesas[mesa.getNumero() - 1] == null) {
-                this.mesas[mesa.getNumero() - 1] = mesa;
-                this.cantMesasActual++;
-                return true;
-            }else {
-                throw new Exception("¡La mesa n°" + mesa.getNumero() + " ya existe!");
-            }
+        if (this.mesas[mesa.getNumero() - 1] == null) {
+            this.mesas[mesa.getNumero() - 1] = mesa;
+            this.cantMesasActual++;
+            return true;
+        }else {
+            throw new Exception("¡La mesa n°" + mesa.getNumero() + " ya existe!");
         }
-
-        throw new Exception("¡Ah ocurrido un error!");
     }
 
     public Mesa buscarMesaDisponible() throws Exception {
@@ -70,16 +66,12 @@ public class ListaMesa {
         }
 
         for (int i = 0; i < this.cantMesasMaxima; i++) {
-            if (mesas[i] != null) {
-                if (mesas[i].getNumero() == numeroMesa) {
-                    return mesas[i];
+            if (this.mesas[i] != null) {
+                if (this.mesas[i].getNumero() == numeroMesa) {
+                    return this.mesas[i];
                 }
             }
         }
         throw new Exception("Ah ocurrido un error!");
-    }
-
-    public int getCantMesasActual() {
-        return this.cantMesasActual;
     }
 }

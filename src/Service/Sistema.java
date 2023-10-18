@@ -1,14 +1,16 @@
 package Service;
 
 import Model.*;
+import Model.Contenedores.Inventario;
 import Model.Contenedores.ListaMesa;
 
 public interface Sistema {
 
     String agregarProductoInventario(Producto producto);
-    String actualizarProducto(String nombre, Producto producto);
+    String actualizarProducto(String nombre, Producto producto) throws Exception;
     String eliminarProducto(String nombre);
     String actualizarStockInventario(String nombre, int stock);
+    public Inventario getInventario();
     String contratarTrabajador(Trabajador trabajador);
     String despedirTrabajador(String nombre);
     String renovarContrato(String nombre, String fechaContratacion, String fechaTermino);

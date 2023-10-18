@@ -56,14 +56,16 @@ public class Inventario {
         throw new Exception("¡Producto no encontrado!");
     }
 
-    public int obtenerPosicion (String nombre) {
+    public int obtenerPosicion (String nombre) throws Exception {
         for (int i = 0; i < this.cantProdductoMaxima; i++) {
-            if (nombre.equalsIgnoreCase(this.productos[i].getNombre())) {
-                return i;
+            if (productos[i] != null) {
+                if (nombre.equalsIgnoreCase(this.productos[i].getNombre())) {
+                    return i;
+                }
             }
         }
 
-        return -1;
+        throw new Exception("¡Producto no encontrado!");
     }
 
     public boolean actualizarStock (int posicion, int stock) throws Exception {
@@ -88,5 +90,28 @@ public class Inventario {
             }
         }
         return menu;
+    }
+
+    public Producto obtenerProducto(String nombreProducto) throws Exception {
+        if (this.cantProdductoActual == 0) {
+            throw new Exception("¡No hay productos registrados!");
+        }
+
+        for (int i = 0; i < this.cantProdductoMaxima; i++) {
+            if (this.productos[i] != null) {
+                if (this.productos[i].getNombre().equalsIgnoreCase(nombreProducto)) {
+                    return this.productos[i];
+                }
+            }
+        }
+        throw new Exception("Ah ocurrido un error!");
+    }
+
+    public Producto obtenerProductosPorPosicion(int posicion) throws Exception {
+        if (this.productos[posicion] != null) {
+            return this.productos[posicion];
+        }else {
+            throw new Exception("¡Producto no encontrado!");
+        }
     }
 }

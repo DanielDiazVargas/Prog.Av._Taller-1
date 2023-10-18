@@ -32,11 +32,7 @@ public class SistemaImpl implements Sistema{
     }
 
     @Override
-    public String actualizarProducto(String nombre, Producto producto) {
-        if (this.inventario.obtenerPosicion(nombre) == -1) {
-            return "¡Producto no encontrado";
-        }
-
+    public String actualizarProducto(String nombre, Producto producto) throws Exception {
         try {
             this.inventario.actualizarProducto(this.inventario.obtenerPosicion(nombre), producto);
             return "Producto actualizado correctamente";
