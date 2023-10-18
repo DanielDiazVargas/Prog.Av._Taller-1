@@ -1,14 +1,12 @@
 import Model.Contenedores.Inventario;
 import Model.Contenedores.ListaMesa;
+import Model.Contenedores.ListaTrabajador;
 import Model.Mesa;
 import Model.Producto;
 import Model.Trabajador;
 import Service.Sistema;
 import Util.Instalador;
-import ucn.ArchivoEntrada;
-import ucn.ArchivoSalida;
-import ucn.StdIn;
-import ucn.StdOut;
+import ucn.*;
 
 
 import java.io.IOException;
@@ -137,6 +135,7 @@ public class Main {
                         Mesa nuevaMesa = new Mesa(numero, posicion);
                         try {
                             StdOut.println(sistemaRestaurante.agregarMesa(nuevaMesa));
+                            escrituraArchivos();
                         }catch (Exception e) {
                             StdOut.println(e.getMessage());
                             return;
@@ -437,6 +436,7 @@ public class Main {
                             if (opcion.equalsIgnoreCase("1")) {
                                 Producto nuevoProducto = new Producto(nuevoNombre, nuevoPrecio, nuevoStock, NuevaCategoria);
                                 StdOut.println(sistemaRestaurante.actualizarProducto(aux, nuevoProducto));
+                                escrituraArchivos();
                                 break;
                             }else if (opcion.equalsIgnoreCase("2")) {
                                 StdOut.println("Cancelado");
@@ -504,8 +504,7 @@ public class Main {
                             " | Stock: " + inventario.obtenerProductosPorPosicion(i).getStock() +
                             " | Categoria: " +inventario.obtenerProductosPorPosicion(i).getCategoria());
                 }
-            }catch (Exception e){
-                StdOut.println(e.getMessage());
+            }catch (Exception ignored){
             }
         }
     }
@@ -530,10 +529,10 @@ public class Main {
             opcion = StdIn.readString();
 
             switch (opcion) {
-                case "1" -> agregarProducto();
-                case "2" -> eliminarProducto();
-                case "3" -> actualizarProducto();
-                case "4" -> verInventario();
+                case "1" -> contratarTrabajador();
+                case "2" -> despedirTrabajador();
+                case "3" -> renovarContrato();
+                case "4" -> verTrabajadores();
                 case "5" -> menu = false;
                 default -> {
                     StdOut.println("¡Opcion no valida!");
@@ -543,22 +542,176 @@ public class Main {
     }
 
     private static void contratarTrabajador() {
+        String nombre;
+        int edad;
+        LocalDate fechaContratacion = LocalDate.now();
+        LocalDate fechaTermino;
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        Trabajador trabajador = new Trabajador("Juan", 21, "Definido", LocalDate.now(), LocalDate.now().plusMonths(12));
-        String respuesta = sistemaRestaurante.contratarTrabajador(trabajador);
-        StdOut.println(respuesta);
+        StdOut.println("Ingrese el nombre del Trabajador a contratar" +
+                "\n o ingrese [-1] para volver");
+        StdOut.print("=> ");
+        String aux = StdIn.readString();
+
+        if (aux.equalsIgnoreCase("-1")) {
+            return;
+        }
+
+        nombre = aux;
+
+        while (true) {
+            StdOut.println("Ingrese la edad del Trabajador a contratar" +
+                    "\n o ingrese [-1] para volver");
+            StdOut.print("=> ");
+            String auxInt = StdIn.readString();
+
+
+            if (auxInt.equalsIgnoreCase("-1")) {
+                return;
+            }
+
+            if (auxInt.matches("[0-9]{1,100}") && Integer.parseInt(auxInt) > 0) {
+                edad = Integer.parseInt(auxInt);
+                break;
+            }else {
+                StdOut.println("Numero no valido");
+            }
+        }
+
+        while (true) {
+            StdOut.println("Ingrese la fecha de termino del Trabajador a contratar. En formato \"dd/MM/yyyy\", ejemplo: 18/10/2023" +
+                    "\n o ingrese [-1] para volver");
+            StdOut.print("=> ");
+            String fecha = StdIn.readString();
+
+            try {
+                fechaTermino = LocalDate.parse(fecha, formato);
+                break;
+            }catch (Exception e){
+                StdOut.println("¡Formato incorrecto!");
+            }
+        }
+
+        Trabajador nuevoTrabajador = new Trabajador(nombre, edad,"Fijo" , fechaContratacion, fechaTermino);
+        StdOut.println(sistemaRestaurante.contratarTrabajador(nuevoTrabajador));
+        escrituraArchivos();
     }
 
     private static void despedirTrabajador() {
-    }
+        StdOut.println("Ingrese el nombre del Trabajador a despedir" +
+                "\n o ingrese [-1] para volver");
+        StdOut.print("=> ");
+        String nombre = StdIn.readString();
 
-    private static void otorgarContratoIndefinido() {
+        if (nombre.equalsIgnoreCase("-1")) {
+            return;
+        }
+
+        try {
+            StdOut.println(sistemaRestaurante.despedirTrabajador(nombre));
+            escrituraArchivos();
+        }catch (Exception e) {
+            StdOut.println(e.getMessage());
+        }
     }
 
     private static void renovarContrato(){
+        String opcion;
+        boolean menu = true;
 
+        while (menu) {
+            StdOut.println("""
+                    :::::::::::::::::::::::::::::
+                       *GESTION DE INVENTARIO*
+                    Elija una opcion:
+                    [1] Renovar contrato
+                    [2] Otorgar Contrato Indefinido
+                    [3] Volver
+                    :::::::::::::::::::::::::::::""");
+            StdOut.print("=> ");
+            opcion = StdIn.readString();
+
+            ListaTrabajador listaTrabajador = sistemaRestaurante.getListaTrabajador();
+
+            switch (opcion) {
+                case "1" -> {
+                    LocalDate fechaContratacion = LocalDate.now();
+                    LocalDate fechaTermino;
+                    DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+                    StdOut.println("Ingrese el nombre del Trabajador a renovar" +
+                            "\n o ingrese [-1] para volver");
+                    StdOut.print("=> ");
+                    String nombre = StdIn.readString();
+
+                    if (nombre.equalsIgnoreCase("-1")) {
+                        return;
+                    }
+
+                    while (true) {
+                        StdOut.println("Ingrese la fecha de termino del Trabajador a contratar. En formato \"dd/MM/yyyy\", ejemplo: 18/10/2023" +
+                                "\n o ingrese [-1] para volver");
+                        StdOut.print("=> ");
+                        String fecha = StdIn.readString();
+
+                        try {
+                            fechaTermino = LocalDate.parse(fecha, formato);
+                            break;
+                        }catch (Exception e){
+                            StdOut.println("¡Formato incorrecto!");
+                        }
+                    }
+
+                    try {
+                        StdOut.println(sistemaRestaurante.renovarContrato(nombre, fechaContratacion, fechaTermino));
+                        escrituraArchivos();
+                    }catch (Exception e) {
+                        StdOut.println(e.getMessage());
+                    }
+                }
+                case "2" -> otorgarContratoIndefinido();
+                case "3" -> menu = false;
+
+            }
+        }
     }
 
+    private static void otorgarContratoIndefinido() {
+        LocalDate fechaContratacion = LocalDate.now();
+
+        StdOut.println("Ingrese el nombre del Trabajador a renovar" +
+                "\n o ingrese [-1] para volver");
+        StdOut.print("=> ");
+        String nombre = StdIn.readString();
+
+        if (nombre.equalsIgnoreCase("-1")) {
+            return;
+        }
+
+        StdOut.println(sistemaRestaurante.otorgarContratoIndefinido(nombre, fechaContratacion));
+    }
+
+    public static void verTrabajadores() {
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        ListaTrabajador listaTrabajador = sistemaRestaurante.getListaTrabajador();
+        for (int i = 0; i < 999; i++) {
+            try {
+                if (listaTrabajador.obtenerTrabajadorsPorPosicion(i) != null) {
+                    StdOut.print("Nombre: " + listaTrabajador.obtenerTrabajadorsPorPosicion(i).getNombre() +
+                            " | Edad: " + listaTrabajador.obtenerTrabajadorsPorPosicion(i).getEdad() +
+                            " | Tipo de Contrato: " + listaTrabajador.obtenerTrabajadorsPorPosicion(i).getTipoContrato() +
+                            " | Fecha de Contratacion: " + listaTrabajador.obtenerTrabajadorsPorPosicion(i).getFechaContratacion().format(formato));
+                    if (listaTrabajador.obtenerTrabajadorsPorPosicion(i).getFechaTermino() != null) {
+                        StdOut.println(" | Fecha de Termino: " + listaTrabajador.obtenerTrabajadorsPorPosicion(i).getFechaTermino().format(formato));
+                    }
+                }
+            }catch (Exception ignored){
+            }
+        }
+    }
+
+    // Menu para gestion de las ordenes
     private static void procesarOrdenes() {
 
     }
@@ -572,8 +725,9 @@ public class Main {
             ArchivoEntrada archivoEntrada = new ArchivoEntrada("mesas.txt");
 
             while (!archivoEntrada.isEndFile()) {
-                int numero = archivoEntrada.getRegistro().getInt();
-                int fila = archivoEntrada.getRegistro().getInt();
+                Registro registro = archivoEntrada.getRegistro();
+                int numero = registro.getInt();
+                int fila = registro.getInt();
 
                 Mesa nuevaMesa = new Mesa(numero, fila);
                 sistemaRestaurante.agregarMesa(nuevaMesa);
@@ -589,10 +743,11 @@ public class Main {
             ArchivoEntrada archivoEntrada = new ArchivoEntrada("productos.txt");
 
             while (!archivoEntrada.isEndFile()) {
-                String nombre = archivoEntrada.getRegistro().getString();
-                int precio = archivoEntrada.getRegistro().getInt();
-                int stock = archivoEntrada.getRegistro().getInt();
-                String categoria = archivoEntrada.getRegistro().getString();
+                Registro registro = archivoEntrada.getRegistro();
+                String nombre = registro.getString();
+                int precio = registro.getInt();
+                int stock = registro.getInt();
+                String categoria = registro.getString();
 
                 Producto nuevoProducto = new Producto(nombre, precio, stock, categoria);
                 sistemaRestaurante.agregarProductoInventario(nuevoProducto);
@@ -608,11 +763,12 @@ public class Main {
             DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
             while (!archivoEntrada.isEndFile()) {
-                String nombre = archivoEntrada.getRegistro().getString();
-                int edad = archivoEntrada.getRegistro().getInt();
-                String tipoContrato = archivoEntrada.getRegistro().getString();
-                LocalDate fechaContratacion = LocalDate.parse(archivoEntrada.getRegistro().getString(), formato);
-                LocalDate fechaTermino = LocalDate.parse(archivoEntrada.getRegistro().getString(), formato);
+                Registro registro = archivoEntrada.getRegistro();
+                String nombre = registro.getString();
+                int edad = registro.getInt();
+                String tipoContrato = registro.getString();
+                LocalDate fechaContratacion = LocalDate.parse(registro.getString(), formato);
+                LocalDate fechaTermino = LocalDate.parse(registro.getString(), formato);
 
                 Trabajador nuevoTrabajador = new Trabajador(nombre, edad, tipoContrato, fechaContratacion, fechaTermino);
                 sistemaRestaurante.contratarTrabajador(nuevoTrabajador);

@@ -7,6 +7,8 @@ import Model.Contenedores.ListaOrden;
 import Model.Contenedores.ListaTrabajador;
 import Model.Orden;
 
+import java.time.LocalDate;
+
 public class SistemaImpl implements Sistema{
 
     private Inventario inventario;
@@ -86,11 +88,7 @@ public class SistemaImpl implements Sistema{
     }
 
     @Override
-    public String renovarContrato(String nombre, String fechaContratacion, String fechaTermino) {
-        if (this.trabajador.identificarTrabajador(nombre) == -1) {
-            return "¡Trabajador no encontrado";
-        }
-
+    public String renovarContrato(String nombre, LocalDate fechaContratacion, LocalDate fechaTermino) {
         try {
             this.trabajador.renovarContrato(this.trabajador.identificarTrabajador(nombre), fechaContratacion, fechaTermino);
             return "El contrato del trabajador ha sido renovado";
@@ -100,16 +98,17 @@ public class SistemaImpl implements Sistema{
     }
 
     @Override
-    public String otorgarContratoIndefinido(String nombre, String fecha) {
-        if (this.trabajador.identificarTrabajador(nombre) == -1) {
-            return "¡Trabajador no encontrado";
-        }
+    public String otorgarContratoIndefinido(String nombre, LocalDate fecha) {
         try {
             this.trabajador.otorgarContratoIndefinido(this.trabajador.identificarTrabajador(nombre), fecha);
             return "El contrato del trabajador ha sido actualizado a Indefinido";
         } catch (Exception e) {
             return e.getMessage();
         }
+    }
+
+    public ListaTrabajador getListaTrabajador() {
+        return this.trabajador;
     }
 
     @Override

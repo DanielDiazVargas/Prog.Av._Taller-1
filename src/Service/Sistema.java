@@ -3,6 +3,9 @@ package Service;
 import Model.*;
 import Model.Contenedores.Inventario;
 import Model.Contenedores.ListaMesa;
+import Model.Contenedores.ListaTrabajador;
+
+import java.time.LocalDate;
 
 public interface Sistema {
 
@@ -13,8 +16,9 @@ public interface Sistema {
     public Inventario getInventario();
     String contratarTrabajador(Trabajador trabajador);
     String despedirTrabajador(String nombre);
-    String renovarContrato(String nombre, String fechaContratacion, String fechaTermino);
-    String otorgarContratoIndefinido(String nombre, String fecha);
+    String renovarContrato(String nombre, LocalDate fechaContratacion, LocalDate fechaTermino);
+    String otorgarContratoIndefinido(String nombre, LocalDate fecha);
+    public ListaTrabajador getListaTrabajador();
     String agregarMesa(Mesa mesa);
     String eliminarMesa(int numero);
     ListaMesa getListaMesa();

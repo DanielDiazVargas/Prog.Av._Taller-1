@@ -1,5 +1,6 @@
 package Model.Contenedores;
 
+import Model.Producto;
 import Model.Trabajador;
 
 import java.time.LocalDate;
@@ -53,39 +54,46 @@ public class ListaTrabajador {
         throw new Exception("No se ha encontrado el trabajador");
     }
 
-    public boolean renovarContrato(int posicion, String nuevaFechaContrato, String nuevaFechaTermino) throws Exception {
+    public boolean renovarContrato(int posicion, LocalDate nuevaFechaContrato, LocalDate nuevaFechaTermino) throws Exception {
         //las fechas permitidas seran de formato dd/MM/yyyy ej: 16/10/2024
         try {
-            LocalDate fechaConvertida = LocalDate.parse(nuevaFechaContrato, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            this.trabajadores[posicion].setFechaContratacion(fechaConvertida);
-            fechaConvertida = LocalDate.parse(nuevaFechaTermino, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            this.trabajadores[posicion].setFechaTermino(fechaConvertida);
+            this.trabajadores[posicion].setFechaContratacion(nuevaFechaContrato);
+            this.trabajadores[posicion].setFechaTermino(nuevaFechaTermino);
             return true;
 
-        }catch (DateTimeParseException e){
-            throw new Exception ("La fecha de nuevo contrato no es valida");
+        }catch (Exception e){
+            throw new Exception ("¡La fecha de nuevo contrato no es valida!");
         }
     }
 
-    public boolean otorgarContratoIndefinido(int posicion, String fecha) throws Exception {
+    public boolean otorgarContratoIndefinido(int posicion, LocalDate fecha) throws Exception {
         if (this.trabajadores[posicion].getTipoContrato().equalsIgnoreCase("Indefinido")) {
             throw new Exception("¡El trabajador ya tiene un contrato indefinido");
         }
 
         this.trabajadores[posicion].setTipoContrato("Indefinido");
-        LocalDate fechaConvertida = LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        this.trabajadores[posicion].setFechaContratacion(fechaConvertida);
+        this.trabajadores[posicion].setFechaContratacion(fecha);
         this.trabajadores[posicion].setFechaTermino(null);
         return true;
     }
 
-    public int identificarTrabajador(String nombre){
+    public int identificarTrabajador(String nombre) throws Exception {
         for (int i = 0; i < this.cantTrabajadoresMaxima; i++) {
-            if (this.trabajadores[i].getNombre().equals(nombre)){
-                return i;
+            if (this.trabajadores[i] != null) {
+                if (this.trabajadores[i].getNombre().equals(nombre)){
+                    return i;
+                }
             }
         }
-        return -1;
+        throw new Exception("¡Trabajador no encontrado!");
 
+    }
+
+    public Trabajador obtenerTrabajadorsPorPosicion(int posicion) throws Exception {
+        if (this.trabajadores[posicion] != null) {
+            return this.trabajadores[posicion];
+        }else {
+            throw new Exception("¡Trabajador no encontrado!");
+        }
     }
 }
