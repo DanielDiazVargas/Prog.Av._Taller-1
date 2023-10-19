@@ -1,19 +1,16 @@
+import Model.*;
 import Model.Contenedores.Inventario;
 import Model.Contenedores.ListaMesa;
+import Model.Contenedores.ListaOrden;
 import Model.Contenedores.ListaTrabajador;
-import Model.Mesa;
-import Model.Producto;
-import Model.Trabajador;
 import Service.Sistema;
 import Util.Instalador;
 import ucn.*;
 
 
-import java.io.DataInput;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.regex.Pattern;
 
 
 public class Main {
@@ -57,18 +54,13 @@ public class Main {
             StdOut.print("=> ");
             opcion = StdIn.readString();
 
-            switch (opcion){
-                case "1": coordinarMesas();
-                    break;
-                case "2": gestionarInventario();
-                    break;
-                case "3": administrarTrabajadores();
-                    break;
-                case "4":
-                    break;
-                case "5": menu = false;
-                    break;
-                default: StdOut.println("¡Opcion no valida!");
+            switch (opcion) {
+                case "1" -> coordinarMesas();
+                case "2" -> gestionarInventario();
+                case "3" -> administrarTrabajadores();
+                case "4" -> procesarOrdenes();
+                case "5" -> menu = false;
+                default -> StdOut.println("¡Opcion no valida!");
             }
         }
     }
@@ -100,7 +92,6 @@ public class Main {
                 }
             }
         }
-
     }
 
     public static void agregarMesa() {
@@ -730,9 +721,285 @@ public class Main {
 
     // Menu para gestion de las ordenes
     private static void procesarOrdenes() {
+        String opcion;
+        boolean menu = true;
+        while (menu) {
+            StdOut.println("""
+                    :::::::::::::::::::::::::::
+                              *ORDEN*
+                    Elija una opcion:
+                    [1] Atender Cliente
+                    [2] Desplegar Menu Disponible
+                    [3] Mostrar resumen
+                    [4] Pedir Cuenta
+                    [5] Ver Ordenes
+                    [6] Volver
+                    :::::::::::::::::::::::::::""");
+            StdOut.print("=> ");
+            opcion = StdIn.readString();
+
+            switch (opcion) {
+                case "1" -> atenderCliente();
+                case "2" -> desplegarMenu();
+                case "3" -> mostrarResumen();
+                case "4" -> pedirCuenta();
+                case "5" -> verOrdenes();
+                case "6" -> menu = false;
+                default -> StdOut.println("¡Opcion no valida!");
+            }
+        }
+    }
+
+    public static void atenderCliente() {
+        String opcion;
+        boolean menu = true;
+        while (menu) {
+            StdOut.println("""
+                    :::::::::::::::::::::::::::
+                              *ORDEN*
+                    Elija una opcion:
+                    [1] Atender nuevo Cliente
+                    [2] Pedir Productos
+                    [3] Volver
+                    :::::::::::::::::::::::::::""");
+            StdOut.print("=> ");
+            opcion = StdIn.readString();
+
+            switch (opcion) {
+                case "1" -> {
+                    String aux;
+
+                    String nombre;
+                    int edad;
+                    Trabajador trabajador;
+
+                    StdOut.println("Ingrese el nombre del Cliente" +
+                            "\n o ingrese [-1] para volver");
+                    StdOut.print("=> ");
+                    aux = StdIn.readString();
+
+                    if (aux.equalsIgnoreCase("-1")) {
+                        return;
+                    }
+
+                    nombre = aux;
+
+                    StdOut.println("Ingrese la edad del Cliente" +
+                            "\n o ingrese [-1] para volver");
+                    StdOut.print("=> ");
+                    aux = StdIn.readString();
+
+                    if (aux.equalsIgnoreCase("-1")) {
+                        return;
+                    }
+
+                    while (true) {
+                        if (aux.matches("[0-9]{1,100}")) {
+                            edad = Integer.parseInt(aux);
+                            break;
+                        }else{
+                            StdOut.println("Numero no valido");
+                        }
+                    }
+
+                    while (true) {
+                        StdOut.println("Ingrese el nombre del Trabajador que atendera la Mesa" +
+                                "\n o ingrese [-1] para volver");
+                        StdOut.print("=> ");
+                        aux = StdIn.readString();
+
+                        if (aux.equalsIgnoreCase("-1")) {
+                            return;
+                        }
+
+                        try {
+                            trabajador = sistemaRestaurante.getListaTrabajador().obtenerTrabajadorsPorPosicion(sistemaRestaurante.getListaTrabajador().identificarTrabajador(aux));
+                            break;
+                        }catch (Exception e) {
+                            StdOut.println(e.getMessage());
+                        }
+                    }
+
+                    try {
+                        StdOut.println(sistemaRestaurante.atenderCliente(nombre, edad, trabajador));
+                    }catch (Exception e) {
+                        StdOut.println(e.getMessage());
+                    }
+                }
+                case "2" -> {
+                    Producto producto;
+                    String nombre;
+                    int posicionCliente;
+                    String nombreProducto;
+                    int cantidad;
+                    Inventario inventario = sistemaRestaurante.getInventario();
+                    ListaOrden listaOrden = sistemaRestaurante.getListaOrden();
+
+                    while (true) {
+                        StdOut.println("Ingrese el nombre del Cliente" +
+                                "\n o ingrese [-1] para volver");
+                        StdOut.print("=> ");
+                        nombre = StdIn.readString();
+
+                        if (nombre.equalsIgnoreCase("-1")) {
+                            return;
+                        }
+
+                        try {
+                            posicionCliente = listaOrden.obtenerPosicion(nombre);
+                            break;
+                        }catch (Exception e) {
+                            StdOut.println(e.getMessage());
+                        }
+                    }
+
+                    while (true) {
+                        StdOut.println("Ingrese el nombre del Producto" +
+                                "\n o ingrese [-1] para volver");
+                        StdOut.print("=> ");
+                        nombre = StdIn.readString();
+
+                        if (nombre.equalsIgnoreCase("-1")) {
+                            return;
+                        }
+
+                        try {
+                            producto = inventario.obtenerProducto(nombre);
+                            break;
+                        }catch (Exception e) {
+                            StdOut.println(e.getMessage());
+                        }
+                    }
+
+                    while (true) {
+                        StdOut.println("Ingrese la cantidad de Producto" +
+                                "\n o ingrese [-1] para volver");
+                        StdOut.print("=> ");
+                        String auxCantidad = StdIn.readString();
+
+                        if (auxCantidad.equalsIgnoreCase("-1")) {
+                            return;
+                        }
+
+                        if (auxCantidad.matches("[0-9]{1,100}")) {
+                            cantidad = Integer.parseInt(auxCantidad);
+                            break;
+                        }else{
+                            StdOut.println("Numero no valido");
+                        }
+                    }
+
+                    try {
+                        inventario.actualizarStock(inventario.obtenerPosicion(nombre), (cantidad * -1));
+                        listaOrden.obtenerOrdenPorPosicion(posicionCliente).pedirProducto(producto, cantidad);
+                    }catch (Exception e) {
+                        StdOut.println(e.getMessage());
+                    }
+                }
+                case "3" -> menu = false;
+                default -> StdOut.println("¡Opcion no valida!");
+            }
+        }
 
     }
 
+    public static void desplegarMenu() {
+        try {
+            String[] menu = sistemaRestaurante.desplegarMenu();
+            for (String s : menu) {
+                StdOut.println(s);
+            }
+        }catch (Exception e) {
+            StdOut.println(e.getMessage());
+        }
+    }
+
+    public static void mostrarResumen() {
+        StdOut.println("Ingrese el nombre del Cliente" +
+                "\n o ingrese [-1] para volver");
+        StdOut.print("=> ");
+        String nombre = StdIn.readString();
+
+        if (nombre.equalsIgnoreCase("-1")) {
+            return;
+        }
+
+        try {
+            String[][] resumen = sistemaRestaurante.mostrarResumen(nombre);
+            for (int i = 0; i < 999; i++) {
+                if (!(resumen[0][1] == null || resumen[1][i] == null)) {
+                    StdOut.println("Cantidad: " + resumen[0][i] +
+                            ", Producto: " + resumen[1][i]);
+                }
+
+            }
+        }catch (Exception e) {
+            StdOut.println(e.getMessage());
+        }
+    }
+
+    public static void pedirCuenta() {
+        String nombre;
+        ListaOrden listaOrden = sistemaRestaurante.getListaOrden();
+        Orden cuenta;
+
+        while (true) {
+            StdOut.println("Ingrese el nombre del Cliente" +
+                    "\n o ingrese [-1] para volver");
+            StdOut.print("=> ");
+            nombre = StdIn.readString();
+
+            if (nombre.equalsIgnoreCase("-1")) {
+                return;
+            }
+
+            try {
+                nombre = listaOrden.obtenerOrden(nombre).getCliente().getNombre();
+                break;
+            }catch (Exception e) {
+                StdOut.println(e.getMessage());
+            }
+        }
+
+        try {
+            cuenta = sistemaRestaurante.pedirCuenta(nombre);
+        }catch (Exception e) {
+            StdOut.println(e.getMessage());
+            return;
+        }
+
+        int precioFinal = 0;
+        try {
+            String[][] resumen = sistemaRestaurante.mostrarResumen(nombre);
+            for (int i = 0; i < 999; i++) {
+                StdOut.println("Cantidad: " + resumen[0][i] +
+                        ", Producto: " + resumen[1][i] +
+                        ", Precio: $" + resumen[2][i] +
+                        ", Precio total: $" + resumen[3][i]);
+                precioFinal += Integer.parseInt(resumen[3][i]);
+            }
+
+            StdOut.println("Total del Pedido: $" + precioFinal +
+                    "\n Trabajador Asignado: " + cuenta.getTrabajador().getNombre() +
+                    "\n n° de Mesa: n°" + cuenta.getNumeroMesaAsociada());
+        }catch (Exception e) {
+            StdOut.println(e.getMessage());
+        }
+    }
+
+    public static void verOrdenes() {
+        ListaOrden listaOrden = sistemaRestaurante.getListaOrden();
+        for (int i = 0; i < 999; i++) {
+            try {
+                if (listaOrden.obtenerOrdenPorPosicion(i) != null) {
+                    StdOut.println("Cliente: " + listaOrden.obtenerOrdenPorPosicion(i).getCliente().getNombre() +
+                            " | Trabajador Asignado: " + listaOrden.obtenerOrdenPorPosicion(i).getTrabajador().getNombre() +
+                            " | n° de Mesa Asociada: " + listaOrden.obtenerOrdenPorPosicion(i).getNumeroMesaAsociada());
+                }
+            }catch (Exception ignored){
+            }
+        }
+    }
 
     // ...
     public static Sistema instalarSistema() {

@@ -104,7 +104,7 @@ public class Inventario {
                 }
             }
         }
-        throw new Exception("Ah ocurrido un error!");
+        throw new Exception("¡Producto no encontrado!");
     }
 
     public Producto obtenerProductosPorPosicion(int posicion) throws Exception {

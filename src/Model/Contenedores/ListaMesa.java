@@ -31,11 +31,12 @@ public class ListaMesa {
     public Mesa buscarMesaDisponible() throws Exception {
         for (int i = 0; i < cantMesasActual; i++) {
             if (this.mesas[i].getDisponible()) {
+                actualizarDisponibilidad(i);
                 return mesas[i];
             }
         }
 
-        throw new Exception("¡Ah ocurrido un error!");
+        throw new Exception("¡No hay mesas disponibles!");
     }
 
     public boolean quitarMesa (int numero) throws Exception {

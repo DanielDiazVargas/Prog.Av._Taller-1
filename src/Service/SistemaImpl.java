@@ -149,10 +149,16 @@ public class SistemaImpl implements Sistema{
         }
     }
 
-    public String[][] mostrarResumen(String nombreCliente) {
-        return orden.obtenerResumen(nombreCliente);
+    @Override
+    public String[][] mostrarResumen(String nombreCliente) throws Exception {
+        try {
+            return orden.obtenerResumen(nombreCliente);
+        }catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
+    @Override
     public Orden pedirCuenta(String nombreCliente) throws Exception {
         try {
             Orden cuenta = orden.obtenerOrden(nombreCliente);
@@ -170,5 +176,9 @@ public class SistemaImpl implements Sistema{
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
+    }
+
+    public ListaOrden getListaOrden() {
+        return this.orden;
     }
 }

@@ -3,6 +3,7 @@ package Service;
 import Model.*;
 import Model.Contenedores.Inventario;
 import Model.Contenedores.ListaMesa;
+import Model.Contenedores.ListaOrden;
 import Model.Contenedores.ListaTrabajador;
 
 import java.time.LocalDate;
@@ -23,8 +24,8 @@ public interface Sistema {
     String eliminarMesa(int numero);
     ListaMesa getListaMesa();
     String atenderCliente(String nombre, int edad, Trabajador trabajador) throws Exception;
-    String[][] mostrarResumen(String nombreCliente);
+    String[][] mostrarResumen(String nombreCliente) throws Exception;
     public Orden pedirCuenta(String nombreCliente) throws Exception;
     String[] desplegarMenu() throws Exception;
-    //Orden pedirCuenta();
+    public ListaOrden getListaOrden();
 }

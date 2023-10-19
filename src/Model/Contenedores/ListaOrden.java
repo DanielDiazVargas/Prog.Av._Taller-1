@@ -48,21 +48,39 @@ public class ListaOrden {
         throw new Exception("¡Orden no encontrada!");
     }
 
-    public int obtenerPosicion(String nombre) {
+    public int obtenerPosicion(String nombre) throws Exception {
         for (int i = 0; i < this.cantOrdenesMaximas; i++) {
-            if (nombre.equalsIgnoreCase(this.ordenes[i].getCliente().getNombre())) {
-                return i;
+            if (this.ordenes[i] != null) {
+                if (nombre.equalsIgnoreCase(this.ordenes[i].getCliente().getNombre())) {
+                    return i;
+                }
             }
         }
 
-        return -1;
+        throw new Exception("¡Cliente no encontrado!");
     }
 
-    public String [][] obtenerResumen(String nombre) {
-        return ordenes[obtenerPosicion(nombre)].resumen();
+    public String [][] obtenerResumen(String nombre) throws Exception {
+        try {
+            return ordenes[obtenerPosicion(nombre)].resumen();
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
     }
 
-    public Orden obtenerOrden(String nombre) {
-        return ordenes[obtenerPosicion(nombre)];
+    public Orden obtenerOrden(String nombre) throws Exception {
+        try {
+            return ordenes[obtenerPosicion(nombre)];
+        }catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public Orden obtenerOrdenPorPosicion(int posicion) throws Exception {
+        if (this.ordenes[posicion] != null) {
+            return this.ordenes[posicion];
+        }else {
+            throw new Exception("¡Orden no encontrada!");
+        }
     }
 }
