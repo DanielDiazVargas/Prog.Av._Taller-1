@@ -9,6 +9,7 @@ import Util.Instalador;
 import ucn.*;
 
 
+import java.io.DataInput;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -28,7 +29,7 @@ public class Main {
         sistemaRestaurante = instalarSistema();
         lecturaArchivos();
         menuSistema();
-        escrituraArchivos();
+        escrituraArchivos("All");
     }
 
     public static void menuSistema() {
@@ -135,12 +136,16 @@ public class Main {
                         Mesa nuevaMesa = new Mesa(numero, posicion);
                         try {
                             StdOut.println(sistemaRestaurante.agregarMesa(nuevaMesa));
-                            escrituraArchivos();
+                            escrituraArchivos("Mesas");
                         }catch (Exception e) {
                             StdOut.println(e.getMessage());
                             return;
                         }
-                        escrituraArchivos();
+                        try {
+                            escrituraArchivos("Mesas");
+                        }catch (Exception ignored) {
+
+                        }
                         return;
                     }else {
                         StdOut.println("Numero no valido");
@@ -168,7 +173,7 @@ public class Main {
             if (auxInt.matches("[0-9]{1,100}") && Integer.parseInt(auxInt) > 0) {
                 try {
                     StdOut.println(sistemaRestaurante.eliminarMesa(Integer.parseInt(auxInt)));
-                    escrituraArchivos();
+                    escrituraArchivos("Mesas");
                     return;
                 }catch (Exception e) {
                     StdOut.println(e.getMessage());
@@ -294,7 +299,11 @@ public class Main {
 
                         Producto nuevoProducto = new Producto(nombre, precio, stock, categoria);
                         StdOut.println(sistemaRestaurante.agregarProductoInventario(nuevoProducto));
-                        escrituraArchivos();
+                        try {
+                            escrituraArchivos("Productos");
+                        }catch (Exception ignored) {
+
+                        }
                         return;
                     }else {
                         StdOut.println("Numero no valido");
@@ -319,7 +328,7 @@ public class Main {
 
         try {
             StdOut.println(sistemaRestaurante.eliminarProducto(nombre));
-            escrituraArchivos();
+            escrituraArchivos("Productos");
         }catch (Exception e) {
             StdOut.println(e.getMessage());
         }
@@ -436,7 +445,7 @@ public class Main {
                             if (opcion.equalsIgnoreCase("1")) {
                                 Producto nuevoProducto = new Producto(nuevoNombre, nuevoPrecio, nuevoStock, NuevaCategoria);
                                 StdOut.println(sistemaRestaurante.actualizarProducto(aux, nuevoProducto));
-                                escrituraArchivos();
+                                escrituraArchivos("Productos");
                                 break;
                             }else if (opcion.equalsIgnoreCase("2")) {
                                 StdOut.println("Cancelado");
@@ -594,7 +603,11 @@ public class Main {
 
         Trabajador nuevoTrabajador = new Trabajador(nombre, edad,"Fijo" , fechaContratacion, fechaTermino);
         StdOut.println(sistemaRestaurante.contratarTrabajador(nuevoTrabajador));
-        escrituraArchivos();
+        try {
+            escrituraArchivos("trabajadores");
+        }catch (Exception ignored) {
+
+        }
     }
 
     private static void despedirTrabajador() {
@@ -609,7 +622,7 @@ public class Main {
 
         try {
             StdOut.println(sistemaRestaurante.despedirTrabajador(nombre));
-            escrituraArchivos();
+            escrituraArchivos("trabajadores");
         }catch (Exception e) {
             StdOut.println(e.getMessage());
         }
@@ -664,7 +677,7 @@ public class Main {
 
                     try {
                         StdOut.println(sistemaRestaurante.renovarContrato(nombre, fechaContratacion, fechaTermino));
-                        escrituraArchivos();
+                        escrituraArchivos("trabajadores");
                     }catch (Exception e) {
                         StdOut.println(e.getMessage());
                     }
@@ -688,7 +701,11 @@ public class Main {
             return;
         }
 
-        StdOut.println(sistemaRestaurante.otorgarContratoIndefinido(nombre, fechaContratacion));
+        try {
+            StdOut.println(sistemaRestaurante.otorgarContratoIndefinido(nombre, fechaContratacion));
+            escrituraArchivos("trabajadores");
+        }catch (Exception ignored){
+        }
     }
 
     public static void verTrabajadores() {
@@ -716,6 +733,8 @@ public class Main {
 
     }
 
+
+    // ...
     public static Sistema instalarSistema() {
         return new Instalador().instalarSistema();
     }
@@ -761,6 +780,7 @@ public class Main {
         try {
             ArchivoEntrada archivoEntrada = new ArchivoEntrada("trabajadores.txt");
             DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate fechaTermino = null;
 
             while (!archivoEntrada.isEndFile()) {
                 Registro registro = archivoEntrada.getRegistro();
@@ -768,7 +788,10 @@ public class Main {
                 int edad = registro.getInt();
                 String tipoContrato = registro.getString();
                 LocalDate fechaContratacion = LocalDate.parse(registro.getString(), formato);
-                LocalDate fechaTermino = LocalDate.parse(registro.getString(), formato);
+                try {
+                    fechaTermino = LocalDate.parse(registro.getString(), formato);
+                }catch (Exception ignored) {
+                }
 
                 Trabajador nuevoTrabajador = new Trabajador(nombre, edad, tipoContrato, fechaContratacion, fechaTermino);
                 sistemaRestaurante.contratarTrabajador(nuevoTrabajador);
@@ -780,7 +803,63 @@ public class Main {
         }
     }
 
-    public static void escrituraArchivos() {
+    public static void escrituraArchivos(String opcion) throws Exception {
+        if (opcion.equalsIgnoreCase("mesas") || opcion.equalsIgnoreCase("all")) {
+            ArchivoSalida archivoSalida = new ArchivoSalida("mesas.txt");
+            ListaMesa listaMesa = sistemaRestaurante.getListaMesa();
+            for (int i = 0; i < 999; i++) {
+                Registro linea = new Registro(2);
+                try {
+                    linea.agregarCampo(listaMesa.obtenerMesa(i).getNumero());
+                    linea.agregarCampo(listaMesa.obtenerMesa(i).getPosicion());
+                    archivoSalida.writeRegistro(linea);
+                }catch (Exception ignored){
 
+                }
+            }
+            archivoSalida.close();
+        }
+
+        if (opcion.equalsIgnoreCase("productos") || opcion.equalsIgnoreCase("all")) {
+            ArchivoSalida archivoSalida = new ArchivoSalida("productos.txt");
+            Inventario inventario = sistemaRestaurante.getInventario();
+            for (int i = 0; i < 999; i++) {
+                Registro linea = new Registro(4);
+                try {
+                    linea.agregarCampo(inventario.obtenerProductosPorPosicion(i).getNombre());
+                    linea.agregarCampo(inventario.obtenerProductosPorPosicion(i).getPrecio());
+                    linea.agregarCampo(inventario.obtenerProductosPorPosicion(i).getStock());
+                    linea.agregarCampo(inventario.obtenerProductosPorPosicion(i).getCategoria());
+                    archivoSalida.writeRegistro(linea);
+                }catch (Exception ignored){
+
+                }
+            }
+            archivoSalida.close();
+        }
+
+        if (opcion.equalsIgnoreCase("trabajadores") || opcion.equalsIgnoreCase("all")) {
+            ArchivoSalida archivoSalida = new ArchivoSalida("trabajadores.txt");
+            ListaTrabajador listaTrabajador = sistemaRestaurante.getListaTrabajador();
+            DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            for (int i = 0; i < 5; i++) {
+                Registro linea = new Registro(5);
+                try {
+                    linea.agregarCampo(listaTrabajador.obtenerTrabajadorsPorPosicion(i).getNombre());
+                    linea.agregarCampo(listaTrabajador.obtenerTrabajadorsPorPosicion(i).getEdad());
+                    linea.agregarCampo(listaTrabajador.obtenerTrabajadorsPorPosicion(i).getTipoContrato());
+                    linea.agregarCampo(listaTrabajador.obtenerTrabajadorsPorPosicion(i).getFechaContratacion().format(formato));
+                    try {
+                        linea.agregarCampo(listaTrabajador.obtenerTrabajadorsPorPosicion(i).getFechaTermino().format(formato));
+                    }catch (Exception e) {
+                        linea.agregarCampo(null);
+                    }
+                    archivoSalida.writeRegistro(linea);
+                }catch (Exception ignored){
+
+                }
+            }
+            archivoSalida.close();
+        }
     }
 }
