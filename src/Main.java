@@ -972,11 +972,13 @@ public class Main {
         try {
             String[][] resumen = sistemaRestaurante.mostrarResumen(nombre);
             for (int i = 0; i < 999; i++) {
-                StdOut.println("Cantidad: " + resumen[0][i] +
-                        ", Producto: " + resumen[1][i] +
-                        ", Precio: $" + resumen[2][i] +
-                        ", Precio total: $" + resumen[3][i]);
-                precioFinal += Integer.parseInt(resumen[3][i]);
+                if (resumen [0][i] != null) {
+                    StdOut.println("Cantidad: " + resumen[0][i] +
+                            ", Producto: " + resumen[1][i] +
+                            ", Precio: $" + resumen[2][i] +
+                            ", Precio total: $" + resumen[3][i]);
+                    precioFinal += Integer.parseInt(resumen[3][i]);
+                }
             }
 
             StdOut.println("Total del Pedido: $" + precioFinal +
