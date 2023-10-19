@@ -26,6 +26,7 @@ public interface Sistema {
     String atenderCliente(String nombre, int edad, Trabajador trabajador) throws Exception;
     String[][] mostrarResumen(String nombreCliente) throws Exception;
     public Orden pedirCuenta(String nombreCliente) throws Exception;
+    public void eliminarOrden(String nombreCliente) throws Exception;
     String[] desplegarMenu() throws Exception;
     public ListaOrden getListaOrden();
 }

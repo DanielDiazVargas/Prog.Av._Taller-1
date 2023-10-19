@@ -982,6 +982,7 @@ public class Main {
             StdOut.println("Total del Pedido: $" + precioFinal +
                     "\n Trabajador Asignado: " + cuenta.getTrabajador().getNombre() +
                     "\n n° de Mesa: n°" + cuenta.getNumeroMesaAsociada());
+            sistemaRestaurante.eliminarOrden(nombre);
         }catch (Exception e) {
             StdOut.println(e.getMessage());
         }

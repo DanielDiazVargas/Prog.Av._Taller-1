@@ -162,9 +162,16 @@ public class SistemaImpl implements Sistema{
     public Orden pedirCuenta(String nombreCliente) throws Exception {
         try {
             Orden cuenta = orden.obtenerOrden(nombreCliente);
-            orden.eliminarOrden(orden.obtenerPosicion(nombreCliente));
             return cuenta;
         }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+    @Override
+    public void eliminarOrden(String nombreCliente) throws Exception {
+        try {
+            orden.eliminarOrden(orden.obtenerPosicion(nombreCliente));
+        }catch (Exception e) {
             throw new Exception(e.getMessage());
         }
     }
